@@ -1,0 +1,17 @@
+benchmarks/horizontal.b98.bre 10000 100000 1000000 10000000
+benchmarks/vertical.b98.pl 10000 100000 1000000 10000000
+benchmarks/diagdown.b98.pl 1000 5000 10000
+benchmarks/diagup.b98.pl 1000 5000 10000
+benchmarks/hollow-square.b98.pl 1000 3000 6000
+benchmarks/filled-square.b98.pl 1000 3000 6000
+benchmarks/horizontal-p.b98.sh 10000 100000 1000000 10000000
+benchmarks/vertical-p.b98.sh 10000 100000 1000000 10000000
+benchmarks/diagdown-p.b98.sh 1000 5000 10000 100000 1000000 10000000
+benchmarks/diagup-p.b98.sh 1000 5000 10000 100000 1000000 10000000
+benchmarks/hollow-square-p.b98.sh 1000 3000 6000 10000 100000 1000000
+benchmarks/filled-square-p-horizontal.b98.sh 1000 3000 6000
+benchmarks/filled-square-p-vertical.b98.sh 1000 3000 6000
+benchmarks/pushpop.b98.bre 10000 100000 1000000 10000000
+benchmarks/yn-rep.b98.bre 10000 100000 1000000 10000000
+benchmarks/y-rep-n.b98.bre 1000 10000 100000
+benchmarks/fork.pl 1024 2048 4096 16384 32768 65536 131072
