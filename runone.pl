@@ -6,7 +6,7 @@ use strict;
 use BSD::Resource qw(setrlimit RLIMIT_CPU);
 use File::Compare qw(compare);
 use File::Path    qw(make_path remove_tree);
-use POSIX         qw(mkfifo :sys_wait_h);
+use POSIX         qw(mkfifo WIFSIGNALED :sys_wait_h);
 use Time::HiRes   qw(gettimeofday tv_interval usleep);
 
 my $MEM_RUNS       = 1;
@@ -61,6 +61,16 @@ for (my $i = 0; $i < $MEM_RUNS; ++$i) {
 
 	$diff = tv_interval($t0);
 
+	if (WIFSIGNALED($?)) {
+		print $memtimeput_h "CRASH $diff\n";
+		print 'C ';
+		print $pid_in_h "q\n";
+		close $pid_in_h;
+		unlink $pid_in;
+		close $memtimeput_h;
+		exit 0
+	}
+
 	if ($diff >= $TIMEOUT) {
 		print $memtimeput_h "TIMEOUT $diff\n";
 		print 'T ';
@@ -69,33 +79,33 @@ for (my $i = 0; $i < $MEM_RUNS; ++$i) {
 		unlink $pid_in;
 		close $memtimeput_h;
 		exit 0
-	} else {
-		++$|;
-		print 'm';
-		--$|;
-		print $memtimeput_h "$diff\n";
+	}
 
-		my $ok = ! -s $errput;
+	++$|;
+	print 'm';
+	--$|;
+	print $memtimeput_h "$diff\n";
+
+	my $ok = ! -s $errput;
+	if ($ok) {
+		open(my $output_h, "< $output") or $ok = 0;
 		if ($ok) {
-			open(my $output_h, "< $output") or $ok = 0;
-			if ($ok) {
-				my $line = <$output_h>;
-				$ok = !$! && $line eq "15 ";
-			}
+			my $line = <$output_h>;
+			$ok = !$! && $line eq "15 ";
 		}
+	}
 
-		if (!$ok) {
-			print STDERR "Error: output did not match expected\n";
-			print STDERR "Got: "; system("cat $output >&2 2>/dev/null");
-			print STDERR "\nAnd some errors" if -e "$errput";
-			print STDERR "\n";
-			print $pid_in_h "q\n";
-			close $pid_in_h;
-			print ' ';
-			remove_tree($tmpdir);
-			close $memtimeput_h;
-			exit 1
-		}
+	if (!$ok) {
+		print STDERR "Error: output did not match expected\n";
+		print STDERR "Got: "; system("cat $output >&2 2>/dev/null");
+		print STDERR "\nAnd some errors" if -e "$errput";
+		print STDERR "\n";
+		print $pid_in_h "q\n";
+		close $pid_in_h;
+		print ' ';
+		remove_tree($tmpdir);
+		close $memtimeput_h;
+		exit 1
 	}
 }
 print $pid_in_h "q\n";
