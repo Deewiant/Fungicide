@@ -11,6 +11,7 @@ benchmarks/diagup-p.b98.sh 1000 5000 10000 100000 1000000 10000000
 benchmarks/hollow-square-p.b98.sh 1000 3000 6000 10000 100000 1000000
 benchmarks/filled-square-p-horizontal.b98.sh 1000 3000 6000
 benchmarks/filled-square-p-vertical.b98.sh 1000 3000 6000
+benchmarks/push.b98.bre 10000 100000 1000000 10000000
 benchmarks/pushpop.b98.bre 10000 100000 1000000 10000000
 benchmarks/yn-rep.b98.bre 10000 100000 1000000 10000000
 benchmarks/y-rep-n.b98.bre 1000 10000 100000
