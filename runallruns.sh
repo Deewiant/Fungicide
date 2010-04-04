@@ -4,7 +4,7 @@ rn=$(wc -l < runs.dat)
 in=$(wc -l < interpreters.dat)
 for i in $(seq 1 $in); do
 	int=$(sed -n ${i}p interpreters.dat | awk '{print $1}')
-	if echo "$int" | grep -q "^#"; then
+	if echo "$int" | grep -q "^#" || echo "$int" | egrep -q "^\s*$"; then
 		continue
 	fi
 	echo "$int:"
