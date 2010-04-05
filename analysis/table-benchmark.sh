@@ -20,14 +20,14 @@ mkdir -p $tmpd
 cat <<EOF
 <table>
 <thead><tr>
-<th scope="column">Interpreter</th>
-<th scope="column">Ran</th>
-<th scope="column">Total time</th>
-<th scope="column">Total memory</th>
-<th scope="column">Maximum memory</th>
-<th scope="column">Time ratio</th>
-<th scope="column">Total memory ratio</th>
-<th scope="column">Maximum memory ratio</th>
+<th scope="col">Interpreter</th>
+<th scope="col">Ran</th>
+<th scope="col">Total time</th>
+<th scope="col">Total memory</th>
+<th scope="col">Maximum memory</th>
+<th scope="col">Time ratio</th>
+<th scope="col">Total memory ratio</th>
+<th scope="col">Maximum memory ratio</th>
 </tr></thead>
 <tbody>
 EOF
