@@ -75,6 +75,11 @@ for benchmark in $(sort -u $tmp); do
 
 		if [[ -f $src/mem ]]; then
 			mem=$(gunzip -c $src/mem | awk '{if($1>m)m=$1}END{print m/1024}')
+
+			# Hack but unlikely to be wrong anyway...
+			if [[ $mem -eq 0 ]]; then
+				mem=0.5
+			fi
 		else
 			mem=
 		fi
