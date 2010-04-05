@@ -61,13 +61,13 @@ for c in $(seq 1 $cols); do
 done
 
 gnuplot <<EOF
-set terminal postscript colour solid "Helvetica,10pt"
+set terminal svg solid font "Helvetica"
 set output "$out"
 set style data linespoints
 set datafile separator ","
 
 # set title "$f"
-set key left Left reverse spacing 1.5 at graph 0.01, graph 0.99
+set key left Left reverse at graph 0.01, graph 0.99
 
 set xlabel "Benchmarks completed"
 set y2label "Memory use (Mio)"
@@ -84,4 +84,4 @@ $minmax
 
 plot $dataplot
 EOF
-sed -i 's/^LT5/LT8/' $out
+#sed -i 's/^LT5/LT8/' $out

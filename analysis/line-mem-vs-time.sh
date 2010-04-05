@@ -53,7 +53,7 @@ done
 cmd=$(echo "$cmd" | sed 's.,$..')
 
 gnuplot <<ENDPLOT
-set term post eps colour "Helvetica,12pt"
+set terminal svg solid font "Helvetica"
 set output "$out"
 
 set key left Left reverse at graph 0.01, graph 0.97

@@ -22,7 +22,7 @@ lines=$(wc -l < $bm/mems.csv)
 xmax=$(echo $(($lines-0.5)))
 
 gnuplot <<ENDPLOT
-set term post eps colour solid "Helvetica,12pt"
+set terminal svg solid font "Helvetica"
 set output "$out"
 set datafile separator ","
 
