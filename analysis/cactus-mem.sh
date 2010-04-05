@@ -42,7 +42,7 @@ dataplot=
 first=true
 for c in $(seq 1 $cols); do
 	# Grab the wanted column and sort it
-	awk -F, "NR==1 {print \$$c} NR > 1 {print \$$c | \"sort -g\"}" $f | \
+	awk -F, "NR==1 {print \$$c} NR>1 && \$$c!=\"\" {print \$$c | \"sort -g\"}" $f | \
 		\
 		# Add X-coordinate, skip too small ones
 		awk -F, "NR==1 {print} NR>1 {i++} NR>1 && \$1 >= $MINALLOWED {OFS=\",\"; print i,\$1}" |
