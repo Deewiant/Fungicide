@@ -72,11 +72,13 @@ set datafile separator ","
 set key left Left reverse spacing 1.5 at graph 0.01, graph 0.99
 
 set xlabel "Benchmarks completed"
-set ylabel "Memory use (Mio)"
+set y2label "Memory use (Mio)"
 
 set xtics 0,5
-set ytics 0,$MEMINTERVAL1
+set ytics 0,$MEMINTERVAL1 format ""
+set y2tics 0,$MEMINTERVAL1
 set mytics $((MEMINTERVAL1/MEMINTERVAL2))
+set my2tics $((MEMINTERVAL1/MEMINTERVAL2))
 
 $memlimit
 

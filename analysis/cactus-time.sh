@@ -79,11 +79,13 @@ set datafile separator ","
 set key left Left reverse spacing 1.5 at graph 0.01, graph 0.99
 
 set xlabel "Benchmarks completed"
-set ylabel "Time (s)"
+set y2label "Time (s)"
 
 set xtics 0,5
-set ytics 0,$TIMEINTERVAL1
+set ytics 0,$TIMEINTERVAL1 format ""
+set y2tics 0,$TIMEINTERVAL1
 set mytics $((TIMEINTERVAL1/TIMEINTERVAL2))
+set my2tics $((TIMEINTERVAL1/TIMEINTERVAL2))
 
 $timelimit
 
