@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/zsh -G
 
 MAXMEM=8192
 TIMEOUT=10800
@@ -16,6 +16,7 @@ n=0
 tmpdir=tmp/memplot
 mkdir -p $tmpdir
 
+rm -f $tmpdir/*
 for interp in data/*; do
 	dir=$interp/$bm
 	if [[ ! -f $dir/memtime ]]; then continue; fi
@@ -28,15 +29,17 @@ for interp in data/*; do
 
 	if [[ $mems -ne 0 ]]; then
 		mt=$(cat $dir/memtime)
-		if [[ -n $(echo "$mt" | cut '-d ' -f2) ]]; then
+		if [[ -n $(echo "$mt" | grep ' ') ]]; then
 			mt=$TIMEOUT
 		fi
 		memInterval=$(($mt/$mems))
 
 		awk "{++n; print $memInterval*n, \$1 / 1024}" $tmpdir/tmp > $tmpdir/$(basename $interp)
+		echo "$(wc -l < $tmpdir/$(basename $interp))"
 		(( ++n ))
+	else
+		echo
 	fi
-	echo
 done
 
 echo "$bm solved by $n interpreters."
@@ -47,13 +50,12 @@ rm -f $tmpdir/tmp
 
 cmd=
 for f in $tmpdir/*; do
-	echo "$(wc -l < $f) $(basename $f)"
 	cmd="$cmd \"$f\" u 1:2 t '$(basename $f)',"
 done
 cmd=$(echo "$cmd" | sed 's.,$..')
 
 gnuplot <<ENDPLOT
-set terminal svg solid font "Helvetica"
+set terminal svg font "Helvetica"
 set output "$out"
 
 set key left Left reverse at graph 0.01, graph 0.97
