@@ -5,8 +5,8 @@ TIMEINTERVAL2=60
 TIMEOUT=10800
 MINALLOWED=1      # Don't plot points below this
 
-if [[ $# -lt 2 || $# -gt 5 ]]; then
-	echo "Usage: $0 <output file> <data file> [xmin [xmax [ymax]]]" >&2
+if [[ $# -lt 2 || $# -eq 3 || $# -gt 5 ]]; then
+	echo "Usage: $0 <output file> <data file> [xmin xmax [ymax]]" >&2
 	exit 1
 fi
 out=$1
