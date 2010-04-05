@@ -126,7 +126,7 @@ for bm in $targetDir/*; do
 				j=1
 			fi
 			((j++))
-			while [[ $(head -n1 $tmp | cut -d, -f$j) != $i ]]; do
+			while [[ $(head -qn1 $tmp | cut -d, -f$j) != $i ]]; do
 				echo -n , >> $tmp
 				((j++))
 			done
@@ -144,15 +144,26 @@ echo
 
 echo -n "Summarizing... "
 f() {
-	first=true
+	head -qn1 $targetDir/*/**/$1.csv | sed 's/[^,]*,//;s/,/\n/g' | sort -u | paste -sd, > $targetDir/$1.csv
+	cp -a $targetDir/$1.csv $tmpd/t
+
 	for f in $targetDir/*/**/$1.csv; do
-		if $first; then
-			<$f
-			first=false
-		else
-			sed 1d $f
-		fi
-	done | sed 's/[^,]*,//' > $targetDir/$1.csv
+		head -qn1 $f > $tmp
+		sed 1d $f | while read -r line; do
+			i=2
+			j=1
+			while [[ -n $(cut -d, -f$j $tmpd/t) ]]; do
+				while [[ $(cut -d, -f$j $tmpd/t) != $(cut -d, -f$i $tmp) ]]; do
+					echo -n ,
+					((j++))
+				done
+				echo -n ,$(echo "$line" | cut -d, -f$i)
+				((i++))
+				((j++))
+			done
+			echo
+		done
+	done | sed 's/^,//' >> $targetDir/$1.csv
 	echo -n $2
 	((n++))
 }
