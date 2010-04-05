@@ -38,9 +38,7 @@ fi
 tmpdir=tmp/cactus
 mkdir -p $tmpdir
 
-# Doesn't handle quoted strings in the CSV but oh well
-headers=$(head -n1 $f)
-cols=$(echo "$headers" | awk -F, '{print NF}')
+cols=$(head -qn1 $f | awk -F, '{print NF}')
 
 dataplot=
 first=true
@@ -49,7 +47,7 @@ for c in $(seq 1 $cols); do
 	awk -F, "NR==1 {print \$$c} NR>1 && \$$c!=\"\" {print \$$c | \"sort -g\"}" $f | \
 		\
 		# Forget about timeouts
-		fgrep -v $TIMEOUT | \
+		fgrep -v timeout | \
 		\
 		# Add X-coordinate, skip too small ones
 		awk -F, "NR==1 {print} NR>1 {i++} NR>1 && \$1 >= $MINALLOWED {OFS=\",\"; print i,\$1}" |

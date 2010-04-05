@@ -1,7 +1,6 @@
 #!/bin/zsh -G
 sourceDir=data
 targetDir=preprocessed-data
-TIMEOUT=10800
 
 if which prll >&/dev/null; then
 	PRLL=true
@@ -54,7 +53,7 @@ for benchmark in $(sort -u $tmp); do
 		if [[ -f $src/time && -f $src/memtime ]]; then
 			time=$(awk '{s+=$1;if($1>m)m=$1}END{print (s-m)/(NR-1)}' $src/{mem,}time)
 		elif [[ -f $src/memtime ]]; then
-			time=$TIMEOUT
+			time=timeout
 		elif [[ -f $src/time ]]; then
 			time=
 			myecho "[ERROR :: time but no memtime]"
@@ -145,15 +144,15 @@ echo
 echo -n "Summarizing... "
 f() {
 	head -qn1 $targetDir/*/**/$1.csv | sed 's/[^,]*,//;s/,/\n/g' | sort -u | paste -sd, > $targetDir/$1.csv
-	cp -a $targetDir/$1.csv $tmpd/t
+	cp -a $targetDir/$1.csv $tmpd/h
 
 	for f in $targetDir/*/**/$1.csv; do
 		head -qn1 $f > $tmp
 		sed 1d $f | while read -r line; do
 			i=2
 			j=1
-			while [[ -n $(cut -d, -f$j $tmpd/t) ]]; do
-				while [[ $(cut -d, -f$j $tmpd/t) != $(cut -d, -f$i $tmp) ]]; do
+			while [[ -n $(cut -d, -f$j $tmpd/h) ]]; do
+				while [[ $(cut -d, -f$j $tmpd/h) != $(cut -d, -f$i $tmp) ]]; do
 					echo -n ,
 					((j++))
 				done
@@ -170,8 +169,6 @@ f() {
 f times T
 f mems M
 echo
-
-rm -rf $tmpd
 
 echo -n "Created $n files in "
 

@@ -34,9 +34,7 @@ fi
 tmpdir=tmp/cactus
 mkdir -p $tmpdir
 
-# Doesn't handle quoted strings in the CSV but oh well
-headers=$(head -n1 $f)
-cols=$(echo "$headers" | awk -F, '{print NF}')
+cols=$(head -qn1 $f | awk -F, '{print NF}')
 
 dataplot=
 first=true
