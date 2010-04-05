@@ -3,14 +3,14 @@
 TIMEOUT=10800
 
 if [[ -z "$1" ]]; then
-	echo "Usage: $0 <preprocessed benchmark-param dir>" >&2
+	echo "Usage: $0 <preprocessed benchmark-param dir> [tmp dir prefix]" >&2
 	exit 1
 fi
 tf=$1/time
 mf=$1/mem
 rf=$1/runs
 
-tmpd=tmp/tablespec
+tmpd=${2}tmp/tablespec
 mkdir -p $tmpd
 
 cat <<EOF

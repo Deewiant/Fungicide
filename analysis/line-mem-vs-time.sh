@@ -3,8 +3,8 @@
 MAXMEM=8192
 TIMEOUT=10800
 
-if [[ $# -ne 2 ]]; then
-	echo "Usage: $0 <output file> <name of benchmark+param>" >&2
+if [[ $# -lt 2 ]]; then
+	echo "Usage: $0 <output file> <name of benchmark+param> [tmp dir prefix]" >&2
 	exit 1
 fi
 out=$1
@@ -13,7 +13,7 @@ ymax=10240
 
 n=0
 
-tmpdir=tmp/memplot
+tmpdir=${3}tmp/memplot
 mkdir -p $tmpdir
 
 rm -f $tmpdir/*
