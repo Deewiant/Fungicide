@@ -12,7 +12,7 @@ tmpd=tmp/process
 tmp=$tmpd/tmp
 
 mkdir -p $tmpd
-if $PRLL; then mkdir -p $tmpd/{t,m}; fi
+if $PRLL; then mkdir -p $tmpd/{t,m,n}; fi
 
 for interp in $sourceDir/*; do
 	for benchmark in $interp/*; do
@@ -52,8 +52,10 @@ for benchmark in $(sort -u $tmp); do
 
 		if [[ -f $src/time && -f $src/memtime ]]; then
 			time=$(awk '{s+=$1;if($1>m)m=$1}END{print (s-m)/(NR-1)}' $src/{mem,}time)
+			n=$(($(wc -l < $src/time) + 1))
 		elif [[ -f $src/memtime ]]; then
 			time=timeout
+			n=1
 		elif [[ -f $src/time ]]; then
 			time=
 			myecho "[ERROR :: time but no memtime]"
@@ -63,8 +65,10 @@ for benchmark in $(sort -u $tmp); do
 		if [[ -n $time ]]; then
 			if $PRLL; then
 				echo "$interp $time" > $tmpd/t/$interp
+				echo "$interp $n" > $tmpd/n/$interp
 			else
 				echo "$interp $time" >> $tgt/time
+				echo "$interp $n" >> $tgt/runs
 			fi
 			myecho T
 		fi
@@ -86,10 +90,11 @@ for benchmark in $(sort -u $tmp); do
 	}
 
 	if $PRLL; then
-		rm -f $tmpd/{t,m}/*
+		rm -f $tmpd/{t,m,n}/*
 		prll doInterp $sourceDir/* 2>/dev/null
 		cat $tmpd/t/* > $tgt/time
 		cat $tmpd/m/* > $tgt/mem
+		cat $tmpd/n/* > $tgt/runs
 	else
 		for interp in $sourceDir/*; do
 			doInterp $interp
