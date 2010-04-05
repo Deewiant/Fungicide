@@ -25,14 +25,21 @@ for interp in data/*; do
 	gunzip -c $dir/mem | grep -v '^0$' > $tmpdir/tmp
 
 	mems=$(wc -l < $tmpdir/tmp)
-	memInterval=$(( $(cat $dir/memtime) / $mems ))
 
-	awk "{++n; print $memInterval*n, \$1 / 1024}" $tmpdir/tmp > $tmpdir/$(basename $interp)
-	(( ++n ))
+	if [[ $mems -ne 0 ]]; then
+		mt=$(cat $dir/memtime)
+		if [[ -n $(echo "$mt" | cut '-d ' -f2) ]]; then
+			mt=$TIMEOUT
+		fi
+		memInterval=$(($mt/$mems))
+
+		awk "{++n; print $memInterval*n, \$1 / 1024}" $tmpdir/tmp > $tmpdir/$(basename $interp)
+		(( ++n ))
+	fi
 	echo
 done
 
-echo "$1 solved by $n interpreters."
+echo "$bm solved by $n interpreters."
 if [[ $n -eq 0 ]]; then
 	exit
 fi
