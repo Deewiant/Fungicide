@@ -16,8 +16,6 @@ my $CPU_RUNS_other = 1;
 
 if ($#ARGV+1 < 3) {
 	print STDERR "Usage: $0 <dir to write to> <program to run> <interpreter to use> [interpreter args...]\n";
-	print STDERR "\n";
-	print STDERR "Expects <program>.expected to exist, with the expected stdout.\n";
 	exit 2;
 }
 
