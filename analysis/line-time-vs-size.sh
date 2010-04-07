@@ -53,4 +53,4 @@ set arrow from 0.5,$TIMEOUT to $xmax,$TIMEOUT nohead linetype rgb "red"
 
 plot $cmd
 ENDPLOT
-sed -i 's/^LT5/LT8/' $out
+#sed -i 's/^LT5/LT8/' $out

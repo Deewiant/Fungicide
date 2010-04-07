@@ -84,4 +84,4 @@ set y2tics add ($MAXMEM)
 
 plot $cmd
 ENDPLOT
-sed -i 's/^LT5/LT8/' $out
+#sed -i 's/^LT5/LT8/' $out
