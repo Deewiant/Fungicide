@@ -61,8 +61,10 @@ cmd=$(echo "$cmd" | sed 's.,$..')
 
 if $gotTimeout; then
 	xmax=$TIMEOUT_XMAX
+	timeoutarrow="set arrow from $TIMEOUT,0.5 to $TIMEOUT,$MAXMEM nohead lt 0 lw 3"
 else
 	xmax=
+	timeoutarrow=
 fi
 
 gnuplot <<ENDPLOT
@@ -91,7 +93,8 @@ set style data lines
 set title "$bm"
 
 set arrow from 0.001,$MAXMEM to graph 1,0.977 nohead lt 0 lw 3
-set arrow from $TIMEOUT,0.5 to $TIMEOUT,$MAXMEM nohead lt 0 lw 3
+$timeoutarrow
+
 set y2tics add ($MAXMEM)
 
 plot $cmd
