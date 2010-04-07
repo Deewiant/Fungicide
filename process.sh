@@ -2,6 +2,8 @@
 sourceDir=data
 targetDir=preprocessed-data
 
+wantedBM=$1
+
 if which prll >&/dev/null; then
 	PRLL=true
 else
@@ -24,20 +26,30 @@ done
 startTime=$(date +%s.%N)
 n=0
 
-rm -rf $targetDir
+if [[ -z $wantedBM ]]; then
+	rm -rf $targetDir
+fi
 
 prevBM=
 for benchmark in $(sort -u $tmp); do
 	bm=$(basename $benchmark | sed 's/-[0-9]\+$//')
 	param=$(basename $benchmark | sed 's/.*-\([0-9]\+$\)/\1/')
 
-	tgt=$targetDir/$bm/$param
-	mkdir -p $tgt
+	if [[ -n $wantedBM && $bm != $wantedBM ]]; then
+		if [[ $bm != $prevBM ]]; then
+			echo "Skipping $bm..."
+			prevBM=$bm
+		fi
+		continue
+	fi
 
 	if [[ $bm != $prevBM ]]; then
 		echo "$bm..."
 		prevBM=$bm
 	fi
+
+	tgt=$targetDir/$bm/$param
+	mkdir -p $tgt
 
 	echo "\t$param..."
 
@@ -115,6 +127,10 @@ done
 
 echo -n "Summarizing... "
 for bm in $targetDir/*; do
+	if [[ -n $wantedBM && $(basename $bm) != $wantedBM ]]; then
+		continue
+	fi
+
 	rm -f $tmpd/{times,mems}
 
 	for param in $bm/*; do
