@@ -14,6 +14,7 @@ tmp=$tmpd/tmp
 mkdir -p $tmpd
 if $PRLL; then mkdir -p $tmpd/{t,m,n}; fi
 
+rm -f $tmp
 for interp in $sourceDir/*; do
 	for benchmark in $interp/*; do
 		basename $benchmark >> $tmp
