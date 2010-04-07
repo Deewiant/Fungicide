@@ -2,6 +2,7 @@
 
 MAXMEM=8192
 TIMEOUT=10800
+TIMEOUT_XMAX=15000 # otherwise automatic
 
 if [[ $# -lt 2 ]]; then
 	echo "Usage: $0 <output file> <name of benchmark+param> [tmp dir prefix]" >&2
@@ -12,6 +13,7 @@ bm=$2
 ymax=10240
 
 n=0
+gotTimeout=false
 
 tmpdir=${3}tmp/memplot
 mkdir -p $tmpdir
@@ -27,19 +29,22 @@ for interp in data/*; do
 
 	mems=$(wc -l < $tmpdir/tmp)
 
+	echo -n "$mems samples"
+
 	if [[ $mems -ne 0 ]]; then
-		mt=$(cat $dir/memtime)
-		if [[ -n $(echo "$mt" | grep ' ') ]]; then
-			mt=$TIMEOUT
-		fi
+		mt=$(cut '-d ' -f2 $dir/memtime)
 		memInterval=$(($mt/$mems))
 
+		if [[ $mt -ge $TIMEOUT ]]; then
+			gotTimeout=true
+		fi
+
+		echo -n ", total time $mt: interval $memInterval"
+
 		awk "{++n; print $memInterval*n, \$1 / 1024}" $tmpdir/tmp > $tmpdir/$(basename $interp)
-		echo "$(wc -l < $tmpdir/$(basename $interp))"
 		(( ++n ))
-	else
-		echo
 	fi
+	echo
 done
 
 echo "$bm solved by $n interpreters."
@@ -54,8 +59,14 @@ for f in $tmpdir/*; do
 done
 cmd=$(echo "$cmd" | sed 's.,$..')
 
+if $gotTimeout; then
+	xmax=$TIMEOUT_XMAX
+else
+	xmax=
+fi
+
 gnuplot <<ENDPLOT
-set terminal svg font "Helvetica"
+set terminal svg dashed font "Helvetica"
 set output "$out"
 
 set key left Left reverse at graph 0.01, graph 0.97
@@ -73,13 +84,14 @@ set grid y2tics
 set xlabel "Time (s)"
 set y2label "Memory use (Mio)"
 
-set xrange [0.001:]
+set xrange [0.001:$xmax]
 
 set style data lines
 
 set title "$bm"
 
-set arrow from 0.001,$MAXMEM to graph 1,0.977 nohead linetype rgb "red"
+set arrow from 0.001,$MAXMEM to graph 1,0.977 nohead lt 0 lw 3
+set arrow from $TIMEOUT,0.5 to $TIMEOUT,$MAXMEM nohead lt 0 lw 3
 set y2tics add ($MAXMEM)
 
 plot $cmd
